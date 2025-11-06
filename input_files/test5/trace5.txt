@@ -1,7 +1,8 @@
 FORK, 10
 IF_CHILD, 0
-EXEC program1, 15
+EXEC program8, 15
 IF_PARENT, 0
-EXEC program2, 20
+EXEC program9, 20
 ENDIF, 0
+
 SYSCALL, 20
