@@ -6,8 +6,6 @@
  */
 
 
-//TODO add System Status OUTPUT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
 
 #include<interrupts.hpp>
 
@@ -79,6 +77,11 @@ std::tuple<std::string, std::string, int> simulate_trace(std::vector<std::string
             current_time++;
 
 
+            //System Status
+            system_status += "time: " + std::to_string(current_time) + "; current trace: FORK, " + std::to_string(duration_intr) + "\n";
+            system_status += print_PCB(childPCB, wait_queue);
+
+
             ///////////////////////////////////////////////////////////////////////////////////////////
             //The following loop helps you do 2 things:
             // * Collect the trace of the chile (and only the child, skip parent)
@@ -123,6 +126,8 @@ std::tuple<std::string, std::string, int> simulate_trace(std::vector<std::string
 			system_status += child_stat;
 			current_time = child_time;
 
+
+            //sets the current back to the parent process
             current = wait_queue.back();
             wait_queue.pop_back();
 
@@ -160,18 +165,20 @@ std::tuple<std::string, std::string, int> simulate_trace(std::vector<std::string
 			current.program_name = program_name;
 			current.size = exec_size;
 
-			//TODO make the time for Patition and PCB out random.
 			//i) marks the patition as occupied
 			if(!allocate_memory(&current)) {
                 std::cerr << "ERROR! Memory allocation failed!" << std::endl;
 				break;
             }
-			execution += std::to_string(current_time) + ", " + std::to_string(3) + ", marking partition as occupied\n";
-            current_time += 3;
+
+            int r_part = rand() % 11;
+			execution += std::to_string(current_time) + ", " + std::to_string(r_part) + ", marking partition as occupied\n";
+            current_time += r_part;
 
 			//update PCB output
-			execution += std::to_string(current_time) + ", " + std::to_string(6) + ", updating PCB\n";
-            current_time += 6;
+            int r_update = rand() % 11;
+			execution += std::to_string(current_time) + ", " + std::to_string(r_update) + ", updating PCB\n";
+            current_time += r_update;
 
 			//k) call the schedular
 			execution += std::to_string(current_time) + ", 0, Schedular called\n";
@@ -180,6 +187,9 @@ std::tuple<std::string, std::string, int> simulate_trace(std::vector<std::string
             current_time++;
 
             
+            //System status output
+            system_status += "time: " + std::to_string(current_time) + "; current trace: EXEC, " + std::to_string(duration_intr) + "\n";
+            system_status += print_PCB(current, wait_queue);
 
 
             ///////////////////////////////////////////////////////////////////////////////////////////
